@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { getWeather } from "@/actions/weather";
 import { usePersistData } from "@/components/use-keep-data";
-import TemperatureThresholdForm from "@/components/TemperatureThresholdForm";
+import TemperatureThresholdForm from "@/components/TempThresholdForm";
 import WeatherTable from "@/components/WeatherTable";
 import { WeatherDataGroupResponse, WeatherData } from "@/common/types";
 

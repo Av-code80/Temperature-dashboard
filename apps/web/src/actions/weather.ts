@@ -3,5 +3,15 @@ export async function getWeather(): Promise<WeatherDataGroupResponse> {
     cache: "no-cache",
   });
 
-  return await response.json();
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(
+      `Failed to fetch weather data: ${response.statusText}`,
+      errorText
+    );
+    throw new Error(`Failed to fetch weather data: ${response.statusText}`);
+  }
+
+  const data: WeatherDataGroupResponse = await response.json();
+  return data;
 }

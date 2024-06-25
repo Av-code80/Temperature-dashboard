@@ -1,6 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
+import { WeatherDataGroupResponse } from "@/common/types";
 
 /**
  * Treat this file as an API controller
@@ -39,6 +40,7 @@ import { NextResponse } from "next/server";
 //   cod: 200
 // };
 
+
 const cities = [
   2800866, // Belgium (Brussels)
   727011, // Bulgaria (Sofia)
@@ -75,9 +77,19 @@ export async function GET(_request: Request) {
   newApiUrl.searchParams.set("appid", process.env.OPEN_WEATHER_MAP_API_KEY);
   newApiUrl.searchParams.set("id", cities.join(","));
 
-  const response = await fetch(newApiUrl, {
+  const response = await fetch(newApiUrl.toString(), {
     next: { tags: ["openWeatherApiGET"] },
   });
 
-  return NextResponse.json(await response.json());
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(
+      `Failed to fetch weather data: ${response.statusText}`,
+      errorText
+    );
+    throw new Error(`Failed to fetch weather data: ${response.statusText}`);
+  }
+
+  const data: WeatherDataGroupResponse = await response.json();
+  return NextResponse.json(data);
 }
