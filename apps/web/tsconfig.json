@@ -1,9 +1,12 @@
 {
   "extends": "@tracklab/commons/tsconfig.json",
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "preserve",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
     "plugins": [
       {

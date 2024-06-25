@@ -11,7 +11,7 @@ You need to add a `.env` file in the `apps/web` folder. Here is the content of t
 
 ```text
 API_BASE_URL=http://localhost:3000
-OPEN_WEATHER_MAP_API_URL=https://api.openweathermap.org/data/2.5/grou
+OPEN_WEATHER_MAP_API_URL=https://api.openweathermap.org/data/2.5/group
 OPEN_WEATHER_MAP_API_KEY=1dc7e8ab217b4828f5b43c6e497a02c4
 ```
 
@@ -42,7 +42,7 @@ all the necessaries to fetch weather data for a selection of cities.
 
 Render in a table, all the cities and their key metrics like the temperature, coordinate, etc.
 Highlight the days with extreme heat by applying a red border or background.
-Display "extreme heat" alongside the name of the cities that meet the criteria.
+Display "extreme heat" alongside the name of the that meet the criteria.
 
 ### 5. Implement Bonus Features:
 
@@ -72,5 +72,6 @@ and any other valuable information you may choose to share with a fellow develop
 This is a Typescript project, please do not underestimate this point 🙂.
 
 ### Notes:
+
 You'll be interviewed based on your own implementation and technical questions will be asked accordingly.
 If you take some code from outside, mark it as is.
