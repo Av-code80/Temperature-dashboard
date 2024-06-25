@@ -1,0 +1,21 @@
+{
+  "name": "@tracklab/monorepo",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "prettier": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "yarn@4.3.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
