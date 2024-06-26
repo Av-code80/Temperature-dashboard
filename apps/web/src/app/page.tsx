@@ -8,12 +8,16 @@ import { usePersistData } from "@/components/use-keep-data";
 import WeatherTable from "@/components/WeatherTable";
 import { WeatherDataGroupResponse, WeatherData } from "@/common/types";
 import TemperatureThresholdForm from "@/components/TempThresholdForm";
-
+import CsvDownloadButton from "@/components/CsvDownloadButton";
 const Home: React.FC = () => {
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [threshold, setThreshold] = useState<number>(0);
   const [showOnlyExtremeHeat, setShowOnlyExtremeHeat] =
     useState<boolean>(false);
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "ascending" | "descending";
+  }>({ key: "name", direction: "ascending" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,19 +41,36 @@ const Home: React.FC = () => {
       )
     : data;
 
-  return (
-    <div className="p-7 w-[100%] h-[100%] bg-gray-100">
-      <Image
-        src="/logo.png"
-        width={100}
-        height={100}
-        alt="Tracklab logo"
-        className="m-auto mb-8"
-        priority={true}
-        style={{ width: "auto", height: "auto" }}
-      />
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === "ascending" ? 1 : -1;
+    }
+    return 0;
+  });
 
-      <TemperatureThresholdForm onThresholdChange={setThreshold} />
+  return (
+    <section className="p-7 w-[100%] h-[100%] bg-gray-100">
+      <article className="flex justify-between items-center mb-4">
+        <Image
+          src="/logo.png"
+          width={100}
+          height={100}
+          alt="Tracklab logo"
+          className="m-auto mb-8"
+          priority={true}
+          style={{ width: "auto", height: "auto" }}
+        />
+      </article>
+      <article className="flex justify-between items-center">
+        <CsvDownloadButton
+          weatherData={sortedData}
+          filename="weather_data.csv"
+        />
+        <TemperatureThresholdForm onThresholdChange={setThreshold} />
+      </article>
       <div className="mb-4 flex justify-center items-center">
         <input
           type="checkbox"
@@ -61,8 +82,13 @@ const Home: React.FC = () => {
           Show Only Cities Exceeding Threshold
         </label>
       </div>
-      <WeatherTable weatherData={filteredData} threshold={threshold} />
-    </div>
+      <WeatherTable
+        weatherData={sortedData}
+        threshold={threshold}
+        onSort={setSortConfig}
+        sortConfig={sortConfig}
+      />
+    </section>
   );
 };
 
