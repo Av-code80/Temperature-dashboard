@@ -1,5 +1,5 @@
 import React from "react";
-import { WeatherData, SortableKeys } from "@/common/types";
+import { WeatherData, SortableKeys } from "@/common/type/types";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 interface Props {
@@ -12,6 +12,9 @@ interface Props {
   sortConfig: { key: SortableKeys; direction: "ascending" | "descending" };
 }
 
+/**
+ * WeatherTable component that displays weather data in a sortable and filterable table.
+ */
 const WeatherTable: React.FC<Props> = ({
   weatherData,
   threshold,
@@ -46,76 +49,45 @@ const WeatherTable: React.FC<Props> = ({
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border-collapse shadow-md rounded-lg">
+    <div
+      className="overflow-x-auto"
+      role="table"
+      aria-label="Weather data table"
+    >
+      <table className="min-w-full bg-white border-collapse shadow-md rounded-lg table-border-gradient transition-ease">
         <thead>
           <tr>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("name")}`}
-              onClick={() => requestSort("name")}
-            >
-              City {renderSortIcon("name")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("dt")}`}
-              onClick={() => requestSort("dt")}
-            >
-              Date {renderSortIcon("dt")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.temp")}`}
-              onClick={() => requestSort("main.temp")}
-            >
-              Temperature {renderSortIcon("main.temp")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.feels_like")}`}
-              onClick={() => requestSort("main.feels_like")}
-            >
-              Feels Like {renderSortIcon("main.feels_like")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.temp_min")}`}
-              onClick={() => requestSort("main.temp_min")}
-            >
-              Min Temp {renderSortIcon("main.temp_min")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.temp_max")}`}
-              onClick={() => requestSort("main.temp_max")}
-            >
-              Max Temp {renderSortIcon("main.temp_max")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.humidity")}`}
-              onClick={() => requestSort("main.humidity")}
-            >
-              Humidity {renderSortIcon("main.humidity")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("main.pressure")}`}
-              onClick={() => requestSort("main.pressure")}
-            >
-              Pressure {renderSortIcon("main.pressure")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("wind.speed")}`}
-              onClick={() => requestSort("wind.speed")}
-            >
-              Wind Speed {renderSortIcon("wind.speed")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("coord.lat")}`}
-              onClick={() => requestSort("coord.lat")}
-            >
-              Latitude {renderSortIcon("coord.lat")}
-            </th>
-            <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("coord.lon")}`}
-              onClick={() => requestSort("coord.lon")}
-            >
-              Longitude {renderSortIcon("coord.lon")}
-            </th>
+            {[
+              { key: "name", label: "City" },
+              { key: "dt", label: "Date" },
+              { key: "main.temp", label: "Temperature" },
+              { key: "main.feels_like", label: "Feels Like" },
+              { key: "main.temp_min", label: "Min Temp" },
+              { key: "main.temp_max", label: "Max Temp" },
+              { key: "main.humidity", label: "Humidity" },
+              { key: "main.pressure", label: "Pressure" },
+              { key: "wind.speed", label: "Wind Speed" },
+              { key: "coord.lat", label: "Latitude" },
+              { key: "coord.lon", label: "Longitude" },
+            ].map(({ key, label }) => (
+              <th
+                key={key}
+                className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor(
+                  key as SortableKeys
+                )}`}
+                onClick={() => requestSort(key as SortableKeys)}
+                scope="col"
+                aria-sort={
+                  sortConfig.key === key
+                    ? sortConfig.direction === "ascending"
+                      ? "ascending"
+                      : "descending"
+                    : "none"
+                }
+              >
+                {label} {renderSortIcon(key as SortableKeys)}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -124,9 +96,17 @@ const WeatherTable: React.FC<Props> = ({
             const isExtremeHeat = temp !== null && temp > threshold;
             const date = new Date(data.dt * 1000).toLocaleDateString();
             return (
-              <tr key={data.id} className={isExtremeHeat ? "bg-red-100" : ""}>
+              <tr
+                key={data.id}
+                className={
+                  isExtremeHeat
+                    ? "bg-blue-100 table-cell-hover"
+                    : "table-cell-hover"
+                }
+              >
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.name}{" "}
                   {isExtremeHeat && (
@@ -137,51 +117,61 @@ const WeatherTable: React.FC<Props> = ({
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {date}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.temp}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.feels_like}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.temp_min}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.temp_max}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.humidity}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.main.pressure}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.wind.speed}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.coord.lat}
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                  role="cell"
                 >
                   {data.coord.lon}
                 </td>

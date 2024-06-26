@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { WeatherDataGroupResponse } from "@/common/types";
+import { WeatherDataGroupResponse } from "@/common/type/types";
 
 /**
  * Treat this file as an API controller
@@ -39,7 +39,6 @@ import { WeatherDataGroupResponse } from "@/common/types";
 //   name: 'Paris',
 //   cod: 200
 // };
-
 
 const cities = [
   2800866, // Belgium (Brussels)

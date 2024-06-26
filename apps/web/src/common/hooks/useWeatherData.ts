@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getWeather } from "@/actions/weather";
-import { WeatherDataGroupResponse, WeatherData } from "@/common/types";
+import { WeatherDataGroupResponse, WeatherData } from "@/common/type/types";
 
 export const useWeatherData = () => {
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
@@ -22,4 +22,3 @@ export const useWeatherData = () => {
 
   return { weatherData, error };
 };
-

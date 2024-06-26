@@ -1,4 +1,4 @@
-import { WeatherData, SortableKeys } from "@/common/types";
+import { WeatherData, SortableKeys } from "@/common/type/types";
 
 export const filterWeatherData = (
   data: WeatherData[],
