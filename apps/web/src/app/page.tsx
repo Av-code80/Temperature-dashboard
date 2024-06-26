@@ -39,7 +39,7 @@ const Home: React.FC = () => {
 
   return (
     <section
-      className="p-7 w-[100%] h-[100%] bg-gradient text-center"
+      className="p-7 min-w-full min-h-full bg-gradient text-center"
       aria-labelledby="main-heading"
     >
       <header className="sticky top-0 z-10 bg-gradient p-4">
