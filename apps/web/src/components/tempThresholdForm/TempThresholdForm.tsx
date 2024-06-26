@@ -31,7 +31,7 @@ const TemperatureThresholdForm: React.FC<Props> = ({ onThresholdChange }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-4  flex flex-col lg:flex-row justify-between lg:justify-between lg:items-center"
+      className="mb-4 flex flex-col lg:flex-row justify-between lg:justify-between lg:items-center"
     >
       <label className="block text-lg font-semibold mr-2">
         Temperature Threshold
@@ -41,7 +41,7 @@ const TemperatureThresholdForm: React.FC<Props> = ({ onThresholdChange }) => {
         value={threshold}
         onFocus={handleFocus}
         onChange={handleChange}
-        className="p-2 text-center border border-gray-300 rounded mr-2 mb-4"
+        className="p-2 text-center border border-gray-300 rounded mr-2 mb-4 lg:mt-4"
         aria-label="Temperature Threshold"
         min="0"
       />
