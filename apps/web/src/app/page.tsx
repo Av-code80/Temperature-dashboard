@@ -1,55 +1,36 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { getWeather } from "@/actions/weather";
 import { usePersistData } from "@/components/use-keep-data";
-
 import WeatherTable from "@/components/WeatherTable";
-import { WeatherDataGroupResponse, WeatherData } from "@/common/types";
+import { SortableKeys } from "@/common/types";
 import TemperatureThresholdForm from "@/components/TempThresholdForm";
 import CsvDownloadButton from "@/components/CsvDownloadButton";
+import { filterWeatherData, sortWeatherData } from "@/utils/weatherUtils";
+import { useWeatherData } from "@/common/hooks/useWeatherData";
+
 const Home: React.FC = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const { weatherData, error } = useWeatherData();
   const [threshold, setThreshold] = useState<number>(0);
   const [showOnlyExtremeHeat, setShowOnlyExtremeHeat] =
     useState<boolean>(false);
   const [sortConfig, setSortConfig] = useState<{
-    key: string;
+    key: SortableKeys;
     direction: "ascending" | "descending";
-  }>({ key: "name", direction: "ascending" });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data: WeatherDataGroupResponse = await getWeather();
-        setWeatherData(data.list);
-      } catch (error) {
-        console.error("Failed to fetch weather data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  }>({
+    key: "name",
+    direction: "ascending",
+  });
 
   const data = usePersistData(weatherData) || [];
 
-  const filteredData = showOnlyExtremeHeat
-    ? data.filter(
-        (city: WeatherData) =>
-          city.main.temp && parseFloat(city.main.temp) > threshold
-      )
-    : data;
+  const filteredData = filterWeatherData(data, threshold, showOnlyExtremeHeat);
+  const sortedData = sortWeatherData(filteredData, sortConfig);
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <section className="p-7 w-[100%] h-[100%] bg-gray-100">
@@ -64,7 +45,7 @@ const Home: React.FC = () => {
           style={{ width: "auto", height: "auto" }}
         />
       </article>
-      <article className="flex justify-between items-center">
+      <article className="flex justify-between items-center mb-4">
         <CsvDownloadButton
           weatherData={sortedData}
           filename="weather_data.csv"

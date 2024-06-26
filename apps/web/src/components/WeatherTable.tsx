@@ -1,19 +1,15 @@
 import React from "react";
-import { WeatherData } from "@/common/types";
-import {
-  TbSortDescendingLetters,
-  TbSortAscendingLetters,
-} from "react-icons/tb";
-import { FaSort } from "react-icons/fa";
+import { WeatherData, SortableKeys } from "@/common/types";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 interface Props {
   weatherData: WeatherData[];
   threshold: number;
   onSort: (sortConfig: {
-    key: string;
+    key: SortableKeys;
     direction: "ascending" | "descending";
   }) => void;
-  sortConfig: { key: string; direction: "ascending" | "descending" };
+  sortConfig: { key: SortableKeys; direction: "ascending" | "descending" };
 }
 
 const WeatherTable: React.FC<Props> = ({
@@ -22,7 +18,7 @@ const WeatherTable: React.FC<Props> = ({
   onSort,
   sortConfig,
 }) => {
-  const requestSort = (key: string) => {
+  const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
       direction = "descending";
@@ -30,19 +26,19 @@ const WeatherTable: React.FC<Props> = ({
     onSort({ key, direction });
   };
 
-  const getClassNamesFor = (key: string) => {
+  const getClassNamesFor = (key: SortableKeys) => {
     if (sortConfig.key === key) {
       return sortConfig.direction === "ascending" ? "asc" : "desc";
     }
     return "";
   };
 
-  const renderSortIcon = (key: string) => {
+  const renderSortIcon = (key: SortableKeys) => {
     if (sortConfig.key === key) {
       if (sortConfig.direction === "ascending") {
-        return <TbSortAscendingLetters size={22} />;
+        return <FaSortUp />;
       } else {
-        return <TbSortDescendingLetters size={22} />;
+        return <FaSortDown />;
       }
     } else {
       return <FaSort />;
@@ -109,10 +105,16 @@ const WeatherTable: React.FC<Props> = ({
               Wind Speed {renderSortIcon("wind.speed")}
             </th>
             <th
-              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("coord")}`}
-              onClick={() => requestSort("coord")}
+              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("coord.lat")}`}
+              onClick={() => requestSort("coord.lat")}
             >
-              Coordinates {renderSortIcon("coord")}
+              Latitude {renderSortIcon("coord.lat")}
+            </th>
+            <th
+              className={`py-2 px-4 border-b border-gray-300 bg-gray-100 cursor-pointer ${getClassNamesFor("coord.lon")}`}
+              onClick={() => requestSort("coord.lon")}
+            >
+              Longitude {renderSortIcon("coord.lon")}
             </th>
           </tr>
         </thead>
@@ -122,7 +124,7 @@ const WeatherTable: React.FC<Props> = ({
             const isExtremeHeat = temp !== null && temp > threshold;
             const date = new Date(data.dt * 1000).toLocaleDateString();
             return (
-              <tr key={data.id} className={isExtremeHeat ? "bg-blue-100" : ""}>
+              <tr key={data.id} className={isExtremeHeat ? "bg-red-100" : ""}>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
                 >
@@ -175,7 +177,14 @@ const WeatherTable: React.FC<Props> = ({
                 </td>
                 <td
                   className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
-                >{`(${data.coord.lat}, ${data.coord.lon})`}</td>
+                >
+                  {data.coord.lat}
+                </td>
+                <td
+                  className={`py-2 px-4 border-b ${isExtremeHeat ? "border-red-500" : "border-gray-300"}`}
+                >
+                  {data.coord.lon}
+                </td>
               </tr>
             );
           })}
