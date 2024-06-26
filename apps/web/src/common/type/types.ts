@@ -56,3 +56,16 @@ export interface WeatherDataGroupResponse {
   cnt: number;
   list: WeatherData[];
 }
+
+export type SortableKeys =
+  | "name"
+  | "dt"
+  | "main.temp"
+  | "main.feels_like"
+  | "main.temp_min"
+  | "main.temp_max"
+  | "main.humidity"
+  | "main.pressure"
+  | "wind.speed"
+  | "coord.lat"
+  | "coord.lon";

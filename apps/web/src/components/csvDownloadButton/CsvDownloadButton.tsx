@@ -1,12 +1,19 @@
 import React from "react";
-import { CSVLink } from "react-csv";
-import { WeatherData } from "@/common/types";
+import { WeatherData } from "@/common/type/types";
+import dynamic from "next/dynamic";
+
+const CSVLink = dynamic(() => import("react-csv").then((mod) => mod.CSVLink), {
+  ssr: false,
+});
 
 interface Props {
   weatherData: WeatherData[];
   filename: string;
 }
 
+/**
+ * Button component to download weather data as CSV.
+ */
 const CsvDownloadButton: React.FC<Props> = ({ weatherData, filename }) => {
   const headers = [
     { label: "City", key: "name" },
@@ -39,9 +46,10 @@ const CsvDownloadButton: React.FC<Props> = ({ weatherData, filename }) => {
       data={data}
       headers={headers}
       filename={filename}
-      className="p-2 bg-blue-500 text-white rounded"
+      className="btn-gradient transition-ease mb-10"
+      aria-label="Download CSV"
     >
-      Download CSV
+      Download file
     </CSVLink>
   );
 };

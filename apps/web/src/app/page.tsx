@@ -1,87 +1,83 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { getWeather } from "@/actions/weather";
-import { usePersistData } from "@/components/use-keep-data";
+import WeatherTable from "@/components/weatherTable/WeatherTable";
+import { SortableKeys } from "@/common/type/types";
+import CsvDownloadButton from "@/components/csvDownloadButton/CsvDownloadButton";
+import { filterWeatherData, sortWeatherData } from "@/utils/weatherUtils";
+import { useWeatherData } from "@/common/hooks/useWeatherData";
+import TemperatureThresholdForm from "@/components/tempThresholdForm/TempThresholdForm";
+import { usePersistData } from "@/common/hooks/use-keep-data";
+import "@/common/style/tailwind.css";
 
-import WeatherTable from "@/components/WeatherTable";
-import { WeatherDataGroupResponse, WeatherData } from "@/common/types";
-import TemperatureThresholdForm from "@/components/TempThresholdForm";
-import CsvDownloadButton from "@/components/CsvDownloadButton";
+/**
+ * Home component that displays the weather data, allows filtering and sorting, and provides CSV download functionality.
+ */
+
 const Home: React.FC = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const { weatherData, error } = useWeatherData();
   const [threshold, setThreshold] = useState<number>(0);
   const [showOnlyExtremeHeat, setShowOnlyExtremeHeat] =
     useState<boolean>(false);
   const [sortConfig, setSortConfig] = useState<{
-    key: string;
+    key: SortableKeys;
     direction: "ascending" | "descending";
-  }>({ key: "name", direction: "ascending" });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data: WeatherDataGroupResponse = await getWeather();
-        setWeatherData(data.list);
-      } catch (error) {
-        console.error("Failed to fetch weather data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  }>({
+    key: "name",
+    direction: "ascending",
+  });
 
   const data = usePersistData(weatherData) || [];
 
-  const filteredData = showOnlyExtremeHeat
-    ? data.filter(
-        (city: WeatherData) =>
-          city.main.temp && parseFloat(city.main.temp) > threshold
-      )
-    : data;
+  const filteredData = filterWeatherData(data, threshold, showOnlyExtremeHeat);
+  const sortedData = sortWeatherData(filteredData, sortConfig);
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
-    <section className="p-7 w-[100%] h-[100%] bg-gray-100">
-      <article className="flex justify-between items-center mb-4">
-        <Image
-          src="/logo.png"
-          width={100}
-          height={100}
-          alt="Tracklab logo"
-          className="m-auto mb-8"
-          priority={true}
-          style={{ width: "auto", height: "auto" }}
-        />
-      </article>
-      <article className="flex justify-between items-center">
-        <CsvDownloadButton
-          weatherData={sortedData}
-          filename="weather_data.csv"
-        />
-        <TemperatureThresholdForm onThresholdChange={setThreshold} />
-      </article>
-      <div className="mb-4 flex justify-center items-center">
-        <input
-          type="checkbox"
-          checked={showOnlyExtremeHeat}
-          onChange={() => setShowOnlyExtremeHeat(!showOnlyExtremeHeat)}
-          className="mr-2"
-        />
-        <label className="text-lg font-semibold">
-          Show Only Cities Exceeding Threshold
-        </label>
-      </div>
+    <section
+      className="p-7 w-[100%] h-[100%] bg-gradient text-center"
+      aria-labelledby="main-heading"
+    >
+      <header className="sticky top-0 z-10 bg-gradient p-4">
+        <article className="flex flex-col lg:flex-row justify-between items-center mb-4">
+          <Image
+            src="/logo.png"
+            width={100}
+            height={100}
+            alt="Tracklab logo"
+            className="m-auto mb-8"
+            priority={true}
+            style={{ width: "auto", height: "auto" }}
+          />
+        </article>
+        <article className="flex flex-col lg:flex-row justify-between mb-6 ">
+          <CsvDownloadButton
+            weatherData={sortedData}
+            filename="weather_data.csv"
+          />
+          <TemperatureThresholdForm onThresholdChange={setThreshold} />
+        </article>
+        <div className="mb-4 flex justify-center items-center">
+          <input
+            type="checkbox"
+            id="extreme-heat-checkbox"
+            checked={showOnlyExtremeHeat}
+            onChange={() => setShowOnlyExtremeHeat(!showOnlyExtremeHeat)}
+            className="mr-2"
+            aria-labelledby="extreme-heat-label"
+          />
+          <label
+            id="extreme-heat-label"
+            className="text-lg font-semibold text-red-600"
+          >
+          Only Cities Exceeding Threshold
+          </label>
+        </div>
+      </header>
       <WeatherTable
         weatherData={sortedData}
         threshold={threshold}
