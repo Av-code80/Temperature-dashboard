@@ -44,7 +44,7 @@ const Home: React.FC = () => {
       <header className="sticky top-0 z-10 bg-gradient p-4">
         <article className="flex flex-col lg:flex-row justify-between items-center mb-4">
           <Image
-            src="/logo.png"
+            src="/assets/logo.png"
             width={100}
             height={100}
             alt="Tracklab logo"
