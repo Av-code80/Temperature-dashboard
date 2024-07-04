@@ -8,7 +8,6 @@ import CsvDownloadButton from "@/components/csvDownloadButton/CsvDownloadButton"
 import { filterWeatherData, sortWeatherData } from "@/utils/weatherUtils";
 import { useWeatherData } from "@/common/hooks/useWeatherData";
 import TemperatureThresholdForm from "@/components/tempThresholdForm/TempThresholdForm";
-import { usePersistData } from "@/common/hooks/use-keep-data";
 import "@/common/style/tailwind.css";
 
 /**
@@ -28,7 +27,7 @@ const Home: React.FC = () => {
     direction: "ascending",
   });
 
-  const data = usePersistData(weatherData) || [];
+  const data = weatherData || [];
 
   const filteredData = filterWeatherData(data, threshold, showOnlyExtremeHeat);
   const sortedData = sortWeatherData(filteredData, sortConfig);
