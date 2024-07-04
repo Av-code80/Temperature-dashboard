@@ -44,7 +44,8 @@ const Home: React.FC = () => {
       <header className="sticky top-0 z-10 bg-gradient p-4">
         <article className="flex flex-col lg:flex-row justify-between items-center mb-4">
           <Image
-            src="/assets/logo.png"
+
+src="/assets/logo.png"
             width={100}
             height={100}
             alt="Tracklab logo"
@@ -53,7 +54,7 @@ const Home: React.FC = () => {
             style={{ width: "auto", height: "auto" }}
           />
         </article>
-        <article className="flex flex-col lg:flex-row justify-between mb-6 ">
+        <article className="flex flex-col lg:flex-row justify-between mb-2 ">
           <CsvDownloadButton
             weatherData={sortedData}
             filename="weather_data.csv"
