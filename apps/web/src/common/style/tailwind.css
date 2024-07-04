@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
 .bg-gradient {
   background: linear-gradient(to right, #cbd9f4, #f7efe3);
 }
@@ -42,4 +41,15 @@
 .btn-gradient:hover {
   background: linear-gradient(to bottom right, #f4caa9, #f7b1a0);
   border-image: linear-gradient(to bottom right, #f4caa9, #f7b1a0) 1;
+}
+
+.asc::after {
+  content: ' \25B2'; 
+  color: blue
+}
+
+.desc::after {
+  content: ' \25BC'; 
+    color: red
+
 }
